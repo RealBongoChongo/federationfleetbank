@@ -1,0 +1,10 @@
+flask
+flask-discord
+py-cord
+python-dotenv
+gunicorn
+pymongo
+flask-socketio
+redis
+python-socketio[client]
+eventlet

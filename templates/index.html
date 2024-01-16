@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>The Federation Fleet Bank</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/assets/img/UFP_Logo.png">
+
+    <meta property="og:title" content="Federation Fleet Bank" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="bank.federationfleet.xyz" />
+    <meta property="og:image" content="/static/assets/img/UFP_Logo.png" />
+    <meta property="og:description" content="Welcome to The Federation Fleet Bank where it is nothing like any other bank in ACFC due to its true freedom and safety for your every needs." />
+    
+    <meta name="theme-color" content="#1d8cf8">
+    <script src="/static/assets/js/core/jquery.min.js"></script>
+    <script src="/static/assets/js/core/popper.min.js"></script>
+    <script src="/static/assets/js/core/bootstrap.min.js"></script>
+    <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Chart JS -->
+    <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="/static/assets/js/black-dashboard.min.js?v=1.0.0"></script>
+</head>
+    <style>
+        header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+  
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+  
+            /* Specify the background image to be used */
+            background-image: url("/static/assets/img/UFP_Logo.png");
+  
+            /* Specify the background image */
+            opacity: 0.2;
+        }
+    </style>
+<nav class="navbar navbar-expand-lg bg-info">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navigation">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            <a class="nav-link" href="{{discord_url}}">{{login_status}}</a>
+            </li>
+            
+            <li class="nav-item">
+            <a class="nav-link" href="https://discord.gg/87ma8XmpGD">Bank Server</a>
+            </li>
+
+            <li class="nav-item">
+            <a class="nav-link" href="/shipakinator/home">ShipAkinator</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>
+  <header class="masthead text-center text-black">
+    <div class="masthead-content">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="masthead-heading mb-0"><b>The Federation Fleet Bank</b></h1>
+                    <p>The Federation Fleet Bank was created to be the most easy to use bank and to be the first bank with a dashboard to assist in your banking needs.</p>
+                    <a href="https://discord.gg/87ma8XmpGD" class="btn btn-info btn-xl rounded-pill mt-5">Bank Discord Server</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </header>
+<section style="background-color: #1d8cf8;" id="stats">
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-lg-3 col-6 text-center">
+                <h3><b><span data-purecounter-start="0" data-purecounter-end="{{accounts}}" data-purecounter-duration="1" class="purecounter" style="color: white;"></span></b></h3>
+                <p>Accounts</p>
+            </div>
+
+            <div class="col-lg-3 col-6 text-center">
+                <h3><b><span data-purecounter-start="0" data-purecounter-end="{{credits}}" data-purecounter-duration="1" class="purecounter" style="color: white;"></span></b></h3>
+                <p>Credits</p>
+            </div>
+
+            <div class="col-lg-3 col-6 text-center">
+                <h3><b><span data-purecounter-start="0" data-purecounter-end="{{transactions}}" data-purecounter-duration="1" class="purecounter" style="color: white;"></span></b></h3>
+                <p>Transactions</p>
+            </div>
+
+            <div class="col-lg-3 col-6 text-center">
+                <h3><b><span data-purecounter-start="0" data-purecounter-end="{{reserve}}" data-purecounter-duration="1" class="purecounter" style="color: white;"></span></b></h3>
+                <p>Reserve</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+<br>
+<section id="affiliates">
+    <div class = "container">
+        <center>
+            <h2>Affiliates:</h2>
+            <div class="row align-items-center">
+
+                <div class="col-lg-6" data-aos="zoom-in">
+                    <div class="card card-chart"><br>
+                        <div class="me unset">
+                        <img src="static/assets/img/UFP_Logo.png" height="256" width="256">
+                        <div class="unset">
+                            <h2 class="title no-margin">United Federation of Planets</h2>
+                            <p class="undertitle"><i>such a pro faction</i></p>
+                            
+                            <a href="https://discord.gg/PG628R9ynD" target="_blank" style="color: white">
+                                <i class="fab fa-discord dev-link-logo"></i>
+                            </a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="zoom-in">
+                    <div class="card card-chart"><br>
+                        <center>
+                            <img src="static/assets/img/kodiak.png" height="256" width="256">
+                        </center>
+                        <div class="unset">
+                            <h2 class="title no-margin">Kodiak</h2>
+                            <p class="undertitle"><i>Creator of ShipAkinator and possibly more</i></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </center>
+    </div>
+</section>
+<br>
+<br>
+<section id="invites">
+    <div class="container" data-aos="fade-up">
+        <center>
+            <h2>
+                UFP / Bank <br>
+                Server List
+            </h2>
+        </center>
+
+        <div class="row">
+            <div class="col-lg-6 order-2 order-lg-1">
+                <iframe src="https://discord.com/widget?id=878364507385233480&theme=dark" width="100%" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
+            <div class="col-lg-6 order-1 order-lg-2">
+                <iframe src="https://discord.com/widget?id=1132706354415534162&theme=dark" width="100%" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+<br>
+    <section id="features" class="features">
+      <div class="container" data-aos="fade-up">
+
+        <center>
+            <h2>Features</h2>
+        </center>
+
+        <div class="row">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column align-items-lg-center">
+            <div class="icon-box mt-5 mt-lg-0" data-aos="fade-up" data-aos-delay="100">
+              <i class="bx bx-receipt"></i>
+              <h4>Dashboard</h4>
+              <p>Unlike the banks already existant on ACFC, this bank has a website interface in order to give the most simplistic experience</p>
+            </div>
+            <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="200">
+              <i class="bx bx-cube-alt"></i>
+              <h4>Joint Accounts</h4>
+              <p>Also unlike other banks in ACFC, this bank allows multiple people to share one account</p>
+            </div>
+            <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="300">
+              <i class="bx bx-images"></i>
+              <h4>Logged Bank Transactions</h4>
+              <p>I am unaware if other banks do this but transactions are logged on a very simple list on the account dashboard</p>
+            </div>
+            <div class="icon-box mt-5" data-aos="fade-up" data-aos-delay="400">
+              <i class="bx bx-shield"></i>
+              <h4>Piracy Insurance</h4>
+              <p>Starting at tier 1 (free) you get 15% of your pirated credits back on any cargo run</p>
+            </div>
+          </div>
+          <div class="image col-lg-6 order-1 order-lg-2 " data-aos="zoom-in" data-aos-delay="100">
+            <img src="/static/assets/img/bankbanner.png" height="800" width="800" class="img-fluid" alt="">
+          </div>
+        </div>
+
+      </div><br>
+    </section>
+        <nav class="navbar bg-info">
+          <div class="copyright" style="color: white; padding-left: 30px; float: left;">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script>,
+               United Federation of Planets
+          </div>
+        </nav>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs/dist/purecounter_vanilla.js"></script>
+<script>
+    new PureCounter();
+</script>
+</html>

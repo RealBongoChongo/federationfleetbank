@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>The Federation Fleet Bank</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/assets/img/UFP_Logo.png">
+
+    <meta property="og:title" content="Federation Fleet Bank" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="bank.federationfleet.xyz" />
+    <meta property="og:image" content="/static/assets/img/UFP_Logo.png" />
+    <meta property="og:description" content="Welcome to The Federation Fleet Bank where it is nothing like any other bank in ACFC due to its true freedom and safety for your every needs." />
+    
+    <meta name="theme-color" content="#1d8cf8">
+    <script src="/static/assets/js/core/jquery.min.js"></script>
+    <script src="/static/assets/js/core/popper.min.js"></script>
+    <script src="/static/assets/js/core/bootstrap.min.js"></script>
+    <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Chart JS -->
+    <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="/static/assets/js/black-dashboard.min.js?v=1.0.0"></script>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
+    ::placeholder {
+        color: white;
+        opacity: 1;
+    }
+
+    ::-ms-input-placeholder { /* Edge 12 -18 */
+        color: white;
+    }
+
+    header {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+</style>
+<script>
+    Number.prototype.clamp = function(min, max) {
+        return Math.min(Math.max(this, min), max);
+    };
+    
+    setTimeout(() => {
+        var shipData = JSON.parse(`{{ data|safe }}`)
+        for (const [discordID, memberData] of Object.entries(shipData)){
+            for (var index = 0; index < memberData["ships"].length; index++) {
+                const ship = memberData["ships"][index]
+                const elementString = `<tr>
+                            <td>
+                            -
+                            </td>
+                            <td>
+                                U.S.S. ${ship["name"]}
+                            </td>
+                            <td>
+                                ${ship["type"]}-${ship["registry"]}
+                            </td>
+                            <td>
+                                ${ship["class"]}
+                            </td>
+                            <td>
+                                ${memberData["username"]}
+                            </td>
+                        </tr>`
+                if (document.getElementById("shipchart")) {
+                    document.getElementById("shipchart").innerHTML += elementString
+                } else {
+                    const element = document.createElement("tbody")
+                    element.id = "shipchart"
+                    
+                    document.getElementById("shipchartparent").appendChild(element)
+                }
+            }
+        }
+
+        var inProgress = false;
+
+        function updateTable(searchBuffer) {
+            inProgress = true
+            searchBuffer.sort((a, b) => b.match - a.match)
+            document.getElementById("shipchart").innerHTML = ""
+            var chunk = 100;
+            var index = 0;
+            function doChunk() {
+                var cnt = chunk;
+                while (cnt-- && index < searchBuffer.length) {
+                    const shipSearched = searchBuffer[index]
+                    const ship = shipSearched["ship"]
+                    const elementString = `<tr>
+                                <td>
+                                    ${shipSearched["match"]}%
+                                </td>
+                                <td>
+                                    U.S.S. ${ship["name"]}
+                                </td>
+                                <td>
+                                    ${ship["type"]}-${ship["registry"]}
+                                </td>
+                                <td>
+                                    ${ship["class"]}
+                                </td>
+                                <td>
+                                    ${ship["username"]}
+                                </td>
+                            </tr>`
+
+                    document.getElementById("shipchart").innerHTML += elementString
+                    ++index;
+                }
+                if (index < searchBuffer.length) {
+                    setTimeout(doChunk, 1);
+                } else {
+                    inProgress = false
+                }
+            }    
+            doChunk();
+        }
+
+        var source = document.getElementById("shipSearch")
+
+        function search() {
+            if (inProgress) {
+                alert("Search in progress. Please wait.")
+                return
+            }
+            var inputValue = source.value.toLowerCase()
+
+            var searchType = document.getElementById("searchtype").value.toLowerCase()
+            var searchBuffer = []
+
+            for (const [discordID, memberData] of Object.entries(shipData)){
+                for (var index = 0; index < memberData["ships"].length; index++) {
+                    const ship = memberData["ships"][index]
+                    var bufferData = {"match": 100, "ship": ship}
+                    ship["username"] = memberData["username"]
+                    if (ship[searchType] != null && inputValue == ship[searchType].toLowerCase()) {
+                        bufferData["match"] = 100
+                    } else if (ship[searchType] === null) {
+                        bufferData["match"] = 0
+                    } else {
+                        var correctCharacters = 0
+                        var foundCharacters = []
+
+                        var correctPlaceCharacters = 0
+
+                        for (var charIndex = 0; charIndex < inputValue.length; charIndex++) {
+                            const character = inputValue[charIndex]
+                            if (ship[searchType].toLowerCase().includes(character) && !foundCharacters.includes(character)) {
+                                foundCharacters.push(character)
+                                correctCharacters++
+                            }
+                            if (ship[searchType].toLowerCase()[charIndex] == character) {
+                                correctPlaceCharacters++
+                            }
+                        }
+                        if ((correctCharacters / ship[searchType].length) * 100 > (correctPlaceCharacters / inputValue.length) * 100) {
+                            bufferData["match"] = (correctCharacters / ship[searchType].length) * 100
+                        } else {
+                            bufferData["match"] = (correctPlaceCharacters / inputValue.length) * 100
+                        }
+                    }
+
+                    searchBuffer.push(bufferData)
+                }
+            }
+
+            updateTable(searchBuffer)
+        }
+
+        document.addEventListener('keydown', event => {
+            const key = event.key.toLowerCase();
+            if (key == "enter") {
+                if (source == document.activeElement) {
+                    search()
+                }
+            }
+        })
+
+        document.getElementById("manualsearch").onclick = search
+    }, 1000)
+</script>
+<body data-color="blue">
+    <nav class="navbar navbar-expand-lg bg-info">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <input id="shipSearch" type="text" class="form-control" placeholder="Search" style="color:white;">
+                    </li>
+                    <li class="nav-item">
+                        <button id="manualsearch" class="btn btn-info">Search</button>
+                    </li>
+                </ul>
+            </div>
+            <select class="form-control form-inline" name="channel" id="searchtype">
+                <option class="form-control" style="color:black;">Name</option>
+                <option class="form-control" style="color:black;">Registry</option>
+                <option class="form-control" style="color:black;">Username</option>
+                <option class="form-control" style="color:black;">Class</option>
+            </select>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Results</h4>
+            </div>
+            <div class="card-body">
+                <table class="table tablesorter " id="shipchartparent">
+                    <thead class=" text-primary">
+                    <tr>
+                        <th>
+                        Match
+                        </th>
+                        <th>
+                        Name
+                        </th>
+                        <th>
+                        Registry
+                        </th>
+                        <th>
+                        Class
+                        </th>
+                        <th>
+                        Ship Owner
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+</body>
+</html>

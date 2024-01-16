@@ -1,0 +1,153 @@
+<head>
+	<title>The Federation Fleet Bank</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/assets/img/UFP_Logo.png">
+
+    <meta property="og:title" content="Federation Fleet Bank" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="bank.federationfleet.xyz" />
+    <meta property="og:image" content="/static/assets/img/UFP_Logo.png" />
+    <meta property="og:description" content="Welcome to The Federation Fleet Bank where it is nothing like any other bank in ACFC due to its true freedom and safety for your every needs." />
+    <meta name="theme-color" content="#1d8cf8">
+    <script src="/static/assets/js/core/jquery.min.js"></script>
+    <script src="/static/assets/js/core/popper.min.js"></script>
+    <script src="/static/assets/js/core/bootstrap.min.js"></script>
+    <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Chart JS -->
+    <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="/static/assets/js/black-dashboard.min.js?v=1.0.0"></script>
+    <style>
+        .center {
+            margin-top: 10px;
+        }
+
+        .card {
+            margin: 10px auto;
+        }
+
+        .tier-1 {
+              background: #1d8cf8;
+              background-image: -webkit-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: -o-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: -moz-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #1d8cf8;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+
+        .tier-2 {
+              background: #00f2c3;
+              background-image: -webkit-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: -o-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: -moz-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #00f2c3;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+
+        .tier-3 {
+              background: #ff8d72;
+              background-image: -webkit-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: -o-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: -moz-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #ff8d72;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+        
+    </style>
+    <script>
+        async function createAccount() {
+            var accountName = document.getElementById("accountName").value
+
+            if (accountName === "") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Account name required`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                var response = await fetch(`/create`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    body: JSON.stringify({accountName: accountName})
+                })
+
+                if (response.status == 403) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Account cannot be created when you have an account with owed credits or have 2 accounts`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    }); 
+                } else {
+                    var res = await response.json()
+                    window.location.replace(res["url"])
+                }
+            }
+        }
+    </script>
+</head>
+<body class="center">
+    <div class="card" style="width: 50%">
+        <div class="card-body">
+            <h4 class="card-title">Create Account</h4>
+            <input type="text" class="form-control" placeholder="Account Name" id = "accountName" name='Account Name'>
+            <button class="btn btn-info" onclick="createAccount()">Create Account</button>
+        </div>
+    </div>
+    {% for account in accounts %}
+        <div class="card" style="width: 50%">
+            <div class="card-img-top tier-{{account['tier']}}"></div>
+            <div class="card-body">
+                <h4 class="card-title">{{account["name"]}}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">#{{account["_id"]}} (TIER {{account["tier"]}})</h6>
+                <h1>${{account["balance"]}}</h1>
+                <a href="/dashboard/{{account['_id']}}/main" class="btn btn-info">Open Dashboard</a>
+            </div>
+        </div>
+    {% endfor %}
+</body>

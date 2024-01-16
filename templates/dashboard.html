@@ -1,0 +1,710 @@
+<head>
+	<title>The Federation Fleet Bank</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <meta name="viewport" content="initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="/static/assets/img/UFP_Logo.png">
+
+    <meta property="og:title" content="Federation Fleet Bank" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="bank.federationfleet.xyz" />
+    <meta property="og:image" content="/static/assets/img/UFP_Logo.png" />
+    <meta property="og:description" content="Welcome to The Federation Fleet Bank where it is nothing like any other bank in ACFC due to its true freedom and safety for your every needs." />
+    <meta name="theme-color" content="#1d8cf8">
+    <script src="/static/assets/js/core/jquery.min.js"></script>
+    <script src="/static/assets/js/core/popper.min.js"></script>
+    <script src="/static/assets/js/core/bootstrap.min.js"></script>
+    <script src="/static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Chart JS -->
+    <script src="/static/assets/js/plugins/chartjs.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="/static/assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="/static/assets/js/black-dashboard.min.js?v=1.0.0"></script>
+    <style>
+        .tier-1 {
+              background: #1d8cf8;
+              background-image: -webkit-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: -o-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: -moz-linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-image: linear-gradient(to bottom left, #1d8cf8, #3358f4, #1d8cf8);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #1d8cf8;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+
+        .tier-2 {
+              background: #00f2c3;
+              background-image: -webkit-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: -o-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: -moz-linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-image: linear-gradient(to bottom left, #00f2c3, #0098f0, #00f2c3);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #00f2c3;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+
+        .tier-3 {
+              background: #ff8d72;
+              background-image: -webkit-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: -o-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: -moz-linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-image: linear-gradient(to bottom left, #ff8d72, #ff6491, #ff8d72);
+              background-size: 210% 210%;
+              background-position: top right;
+              background-color: #ff8d72;
+              transition: all 0.15s ease;
+              box-shadow: none;
+              color: #ffffff;
+              height: 50px;
+        }
+    </style>
+    <script>
+        async function addHolder() {
+            var holderInput = document.getElementById("accountHolder").value
+
+            if (holderInput === "") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, You must specify a discord user ID`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                var response = await fetch(`/change/holders/add/{{account["_id"]}}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    body: JSON.stringify({holder: holderInput})
+                })
+
+                if (response.status == 404) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, User was not found (Check if they are in the banking server)`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else if (response.status == 400) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, User is already a holder`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `User successfully added`
+                    },
+                    {
+                        type: 'success',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    }); 
+
+                    var data = await response.json()
+
+                    var holderContent = document.getElementById("holders")
+
+                    holderContent.innerHTML += `<div class="row" id="${data["username"]}" data-user="${holderInput}">{% if user.id == account["owner"] %}<p class="col-sm-12">${data["username"]}<button class="btn btn-info"> Remove </button></p>{% else %}<p class="col-sm-12">${data["username"]}</p>{% endif %}</div>`
+                }
+            }
+        }
+
+        async function removeHolder(holderId, holderName) {
+            var response = await fetch(`/change/holders/remove/{{account["_id"]}}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                },
+                body: JSON.stringify({holder: holderName})
+            })
+
+            if (response.status == 400) {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, User is not a holder`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                var userElement = document.getElementById(holderId)
+
+                userElement.remove()
+
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `User Removed`
+                },
+                {
+                    type: 'success',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        }
+
+        async function createTransaction() {
+            var accountID = document.getElementById("transferAccountID").value
+            var transferAmount = document.getElementById("transferAmount").value
+            var transferReason = document.getElementById("transferReason").value
+
+            if (accountID === "" || transferAmount === "" || transferReason === "") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, All values must be filled`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else if (accountID === "{{account['number']}}") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Invalid Account ID`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                var response = await fetch(`/transaction/{{account["_id"]}}/${accountID}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    body: JSON.stringify({reason: transferReason, amount: parseInt(transferAmount)})
+                })
+
+                if (response.status == 404) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Account could not be found`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else if (response.status == 403) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Insufficient funds`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else if (response.status == 400) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Invalid amount set`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `Transaction complete. Reload page to see updated balance`
+                    },
+                    {
+                        type: 'success',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+            }
+        }
+
+        async function createExternalTransaction() {
+            var accountID = document.getElementById("transferExternal").value
+            var transferAmount = document.getElementById("transferAmountExternal").value
+            var transferReason = document.getElementById("transferReasonExternal").value
+
+            if (accountID === "" || transferAmount === "" || transferReason === "") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, All values must be filled`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else if (accountID === "{{account['number']}}") {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Invalid Account ID`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                var response = await fetch(`/transaction/external/{{account["_id"]}}/${accountID}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    },
+                    body: JSON.stringify({reason: transferReason, amount: parseInt(transferAmount)})
+                })
+
+                if (response.status == 404) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Account could not be found`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else if (response.status == 403) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Insufficient funds`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else if (response.status == 400) {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `<b>Aborted</b>, Invalid amount set`
+                    },
+                    {
+                        type: 'danger',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                } else {
+                    $.notify({
+                        icon: "tim-icons icon-bell-55",
+                        message: `Transaction complete. Reload page to see updated balance`
+                    },
+                    {
+                        type: 'success',
+                        timer: 3000,
+                        placement: {
+                            from: 'top',
+                            align: 'right'
+                        }
+                    });
+                }
+            }
+        }
+
+        async function upgradeAccount() {
+            var response = await fetch(`/upgrade/{{account["_id"]}}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+
+            if (response.status == 404) {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Account could not be found`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else if (response.status == 403) {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Insufficient funds`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `Transaction complete. Reload page to see updated balance.`
+                },
+                {
+                    type: 'success',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        }
+
+        async function payLoans() {
+            var response = await fetch(`/loans/{{account["_id"]}}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+
+            if (response.status == 404) {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Account could not be found`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else if (response.status == 403) {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `<b>Aborted</b>, Insufficient funds`
+                },
+                {
+                    type: 'danger',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            } else {
+                $.notify({
+                    icon: "tim-icons icon-bell-55",
+                    message: `Transaction complete. Reload page to see updated balance.`
+                },
+                {
+                    type: 'success',
+                    timer: 3000,
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    }
+                });
+            }
+        }
+    </script>
+</head>
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar" data="blue">
+      <div class="sidebar-wrapper">
+        <div class="logo text-center">
+          <a href="/accounts" class="simple-text logo-normal">
+            {{account["name"]}} <br> (Dashboard v1.4.0)
+          </a>
+        </div>
+        <ul class="nav">
+        {% if setting == 'main' %}
+          <li class="active ">
+        {% else %}
+          <li>
+        {% endif %}
+            <a href="/dashboard/{{account['number']}}/main">
+              <i class="tim-icons icon-bank"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel" data="blue">
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="dropdown nav-item">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                  <div class="photo">
+                      {% if avatar %}
+                        <img src="{{avatar}}" alt="Profile Photo">
+                      {% else %}
+                        <img src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" />
+                      {% endif %}
+                  </div>
+                  <b class="caret d-none d-lg-block d-xl-block"></b>
+                  <p class="d-lg-none"></p>
+                </a>
+                <ul class="dropdown-menu dropdown-navbar">
+                  <li class="nav-link"><a href="/accounts" class="nav-item dropdown-item">Change Account</a></li>
+                  <li class="dropdown-divider"></li>
+                  <li class="nav-link"><a href="/" class="nav-item dropdown-item">Home</a></li>
+                </ul>
+              </li>
+              <li class="separator d-lg-none"></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="content">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="card card-chart">
+              <div class="card-img-top tier-{{account['tier']}}"></div>
+              <div class="card-header">
+                <h5 class="card-category">Account Balance</h5>
+                <h3 class="card-title" id="accountBalance">
+                  <i class="tim-icons icon-wallet-43"></i>
+                  {{account["balance"]}}
+                </h3>
+                <h5 class="card-title" id="accountBalance">
+                    Amount Owed: {{account["owed"]}}
+                </h5>
+                {% if account["tier"] < 3 %}
+                    <button class="btn btn-info" onclick="upgradeAccount()"> Upgrade 
+                        {% if account["tier"] == 1 %}
+                            (150 Credits)
+                        {% elif account["tier"] == 2 %}
+                            (350 Credits)
+                        {% endif %}
+                    </button>
+                {% endif %}
+                <button class="btn btn-info" onclick="payLoans()"> Pay Loans </button>
+              </div>
+              <div class="card-body">
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Account Holders (User may have to join bank server to be added)</h5>
+                <h3 class="card-title">
+                  <i class="tim-icons icon-single-02"></i>
+                  Owner: {{account["ownerName"]}}
+                </h3>
+              </div>
+              <div class="card-body text-center" id="holders">
+                {% for holder, holderid in account["holders"].items() %}
+                  {% if holder != account["ownerName"] %}
+                    <div class="row" id="{{holderid}}">
+                      {% if user.id == account["owner"] %}
+                      
+                      <p class="col-sm-12">{{holder}}<button class="btn btn-info" onclick="removeHolder('{{holderid}}', '{{holder}}')"> Remove </button></p>
+
+                      {% else %}
+                      <p class="col-sm-12">{{holder}}</p>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                    {% if user.id == account["owner"] %}
+                      <input type="text" class="form-control" placeholder="User ID" id = "accountHolder" name='New Account Holder'>
+                      <br>
+                      <button class="btn btn-info" onclick="addHolder()"> Add User </button>
+                      <br>
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Balance Transfers <h5>(INTERNAL)</h5></h5>
+              </div>
+              <div class="card-body text-center">
+                <input type="text" class="form-control" placeholder="Account ID" id = "transferAccountID" name='Account ID'>
+                <input type="text" class="form-control" placeholder="Amount" id = "transferAmount" name='Amount'>
+                <input type="text" class="form-control" placeholder="Reason" id = "transferReason" name='Transfer Reason'>
+                <button class="btn btn-info" onclick="createTransaction()"> Transfer </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">Balance Transfers <h5>(EXTERNAL)</h5></h5>
+              </div>
+              <div class="card-body text-center">
+                <input type="text" class="form-control" placeholder="Corp/Faction name" id = "transferExternal" name='Corp/Faction name'>
+                <input type="text" class="form-control" placeholder="Amount" id = "transferAmountExternal" name='Amount'>
+                <input type="text" class="form-control" placeholder="Reason" id = "transferReasonExternal" name='Transfer Reason'>
+                <button class="btn btn-info" onclick="createExternalTransaction()"> Transfer </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Account Transactions</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table tablesorter " id="">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th>
+                          Amount
+                        </th>
+                        <th>
+                          Description
+                        </th>
+                        <th>
+                          Recipient/Sender
+                        </th>
+                        <th>
+                          Authorized By
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for transaction in account["transactions"] %}
+                      <tr>
+                        <td>
+                          {{ transaction["amount"] }}
+                        </td>
+                        <td>
+                          {{ transaction["description"] }}
+                        </td>
+                        <td>
+                          {{ transaction["recipient"] }}
+                        </td>
+                        <td>
+                          {{ transaction["authorizedBy"] }}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

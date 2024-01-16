@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>ACFC Akinator</title>
+    <link rel="icon" href="/static/kodiak/images/favicon.png">
+    <link rel="stylesheet" href="/static/kodiak/styles/master.css">
+
+    <meta property="og:title" content="ACFC Ship Akinator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="federationfleet-acfc.xyz/shipakinator/home" />
+    <meta property="og:image" content="/static/kodiak/images/favicon.png" />
+    <meta property="og:description" content="Made by Kodiak (@OOOO_01O)" />
+
+    <meta name="theme-color" content="#1d8cf8">
+</head>
+<body>
+    <div id="topbar">
+        <script src="/static/kodiak/scripts/topbar.js"></script>
+    </div>
+
+    <div id="frame">
+        <h1>ACFC Akinator for Ships</h1>
+
+        <div id="akinator" style="display: none;">
+            <p id="question">
+                If you see this that means the JS encountered an error or you have disabled scripts.
+            </p>
+
+            <img id="ship" />
+
+            <br>
+
+            <button id="example-button">Error?</button>
+
+            <div id="buttons" style="display: contents"></div>
+        </div>
+
+        <script src="/static/kodiak/scripts/shipakinator_list.js"></script>
+        <script src="/static/kodiak/scripts/shipakinator.js"></script>
+
+        <br>
+
+        <button id="button" onclick="start()">Start</button>
+
+        <p class="tiny" id="warningtext">Reminder: this version of the shipakinator is WIP and may be missing alotta of ships, to see a list of ships click <a class="tiny" href="/shipakinator/ships">here</a>.</p>
+    </div>
+</body>
+</html>
